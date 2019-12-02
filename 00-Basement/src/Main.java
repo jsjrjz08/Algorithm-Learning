@@ -30,6 +30,8 @@ public class Main {
         Tools.selectionSort(new int[]{6,9,7,8,6,10,3});
         System.out.print("插入排序：");
         Tools.insertionSort(new int[]{6,9,7,8,6,10,3});
+        System.out.print("希尔排序：");
+        Tools.shellSort(new int[]{6,9,7,8,6,10,3});
         System.out.print("快速排序：");
         Tools.quickSort(new int[]{6,9,7,8,6,10,3});
         System.out.print("归并排序：");
