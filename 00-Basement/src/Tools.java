@@ -61,14 +61,14 @@ class Tools {
 //    1. 从0位置开始，比较相邻两个数的大小，如果后面的数小于前面，则交换位置。
 //    2. 遍历一遍下来，最后一个数为整个数组中的最大值。
 //    3. 把最后一个数排除，继续比较剩下的数组。
-//    4. 总共比较次数为N*N，时间复杂度为O（n²）。
     public static void bubbleSort(int[] arr) {
         if (arr == null || arr.length < 2) {
             return;
         }
-        for (int i = arr.length - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (arr[j] > arr[j + 1]) {
+
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr.length - 1 - i; j++) {
+                if (arr[j + 1] < arr[j]) {
                     swap(arr, j, j + 1);
                 }
             }
@@ -159,7 +159,8 @@ class Tools {
             return;
         }
         //随机产生partition值，防止出现最坏情况
-        swap(arr, right, (int) (Math.random() * ( right - left + 1)  )+ left );
+        int pivot = (int) (left + Math.random() * ( right - left + 1));
+        swap(arr, pivot, right);
         //返回的数组p为partition的左右边界
         int[] p = partition(arr, left, right);
         quickSort(arr, left, p[0]-1);
@@ -167,7 +168,8 @@ class Tools {
     }
 
     public static int[] partition(int[] arr, int left, int right) {
-        int less = left - 1, more = right;
+        int less = left - 1;
+        int more = right;
         while ( left < more ) {
             if ( arr[left] < arr[right] ) {
                 swap(arr, ++less, left++);
@@ -193,32 +195,40 @@ class Tools {
         printArray(arr);
     }
 
+    //将arr数组区间[l...r]之间的元素均分成两部分分别进行排序，然后整体排序
     public static void mergeSort(int[] arr, int l, int r) {
         if (l == r) {
             return;
         }
-        int mid = l + ((r - l) >> 1);
+        int mid = l + ((r - l) /2);
         mergeSort(arr, l, mid);
         mergeSort(arr, mid + 1, r);
         merge(arr, l, mid, r);
     }
 
-    public static void merge(int[] arr, int l, int m, int r) {
-        int[] help = new int[r - l + 1];
+    //将前后两部分分别有序的数组整体排序
+    public static void merge(int[] arr, int l, int mid, int r) {
+        //mergeResult存放[l...r]合并之后的元素
+        int[] mergeResult = new int[r - l + 1];
+        //mergeResult 的下标
         int i = 0;
-        int p1 = l;
-        int p2 = m + 1;
-        while (p1 <= m && p2 <= r) {
-            help[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+
+        int p1 = l;//arr前半部分元素下标
+        int p2 = mid + 1;//arr后半部分元素下标
+        while (p1 <= mid && p2 <= r) {
+            mergeResult[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
         }
-        while (p1 <= m) {
-            help[i++] = arr[p1++];
+        //arr前半部分有剩余元素
+        while (p1 <= mid) {
+            mergeResult[i++] = arr[p1++];
         }
+        //arr后半部分有剩余元素
         while (p2 <= r) {
-            help[i++] = arr[p2++];
+            mergeResult[i++] = arr[p2++];
         }
-        for (i = 0; i < help.length; i++) {
-            arr[l + i] = help[i];
+        //将排好序后的元素覆盖到原数组的相应位置
+        for (i = 0; i < mergeResult.length; i++) {
+            arr[l + i] = mergeResult[i];
         }
     }
 
@@ -241,6 +251,8 @@ class Tools {
         printArray(arr);
     }
 
+    //上浮
+    //对下标i元素在arr构成的堆中上浮
     public static void insertHeap(int[] arr, int i) {
         while (arr[i] > arr[(i - 1) / 2]) {
             swap(arr, i, (i - 1) / 2);
@@ -248,6 +260,8 @@ class Tools {
         }
     }
 
+    //下沉
+    //在arr数组长度为size的范围内对下标index的元素进行下沉操作
     public static void heapify(int[] arr, int index, int size) {
         int left = index * 2 + 1;
         while ( left < size ) {
