@@ -1,59 +1,66 @@
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MySort {
     public static void main(String[] args) {
-//        Math.random();
         bubbleSort(GenerateArrayUtil.generateRandomArray(7,20));
         selectionSort(GenerateArrayUtil.generateRandomArray(7,20));
         insertionSort(GenerateArrayUtil.generateRandomArray(7,20));
         mergeSort(GenerateArrayUtil.generateRandomArray(7,20));
         heapSort(GenerateArrayUtil.generateRandomArray(7,20));
         quickSort(GenerateArrayUtil.generateRandomArray(7,20));
+        int[] arr = GenerateArrayUtil.generateRandomArray(7,20);
+        Arrays.sort(arr);
+        binarySearch(arr, arr[5]);
 
     }
 
-    //快速排序
-    //O(nlogn)
-    private static void quickSort(int[] arr) {
-        String desc = "快速排序";
+    //O(logn)
+    private static int binarySearch(int[] arr, int target) {
+        String desc = "二分搜索：是在有序数组的基础上进行的查找:待查元素="+target;
         GenerateArrayUtil.printArray(arr,desc,true);
-        if(arr == null || arr.length < 2) {
-            return;
-        }
-        quickSort(arr,0,arr.length-1);
-        GenerateArrayUtil.printArray(arr,desc,false);
-    }
 
-    //递归函数：在arr数组区间[low...high]中进行快速排序
-    //O(nlogn)
-    private static void quickSort(int[] arr,int low,int high) {
-        //结束条件
-        if(low >= high) {
-            return;
+        if(arr == null || arr.length == 0) {
+            return -1;
         }
 
-        //返回标的点位置
-        int mid = getMiddle(arr,low,high);
-        quickSort(arr,low,mid);
-        quickSort(arr,mid+1,high);
-    }
+        //在区间[l...r]内进行查找
+        int l = 0;
+        int r = arr.length - 1;
 
-    //在arr数组区间[low...high]中找到第一个元素在排序后的位置
-    //O(n)
-    private static int getMiddle(int[] arr,int low,int high) {
-        int pivot = arr[low];
-
-        while(low<high) {
-            while(low<high && arr[high]>=pivot) {
-                high--;
+        while(l<=r) {
+            int mid = l+(r-l)/2;
+            if(arr[mid] == target) {
+                System.out.println(mid);
+                return mid;
+            } else if(arr[mid] < target) {
+                l = mid + 1;
+            } else {//arr[mid] > target
+                r = mid - 1;
             }
-            arr[low] = arr[high];
-            while(low<high && arr[low]<=pivot) {
-                low++;
-            }
-            arr[high] = arr[low];
         }
-        arr[low] = pivot;
-        return low;
+
+        return -1;
     }
+
+    private static int missingNumber(int[] nums) {
+        if(nums == null) {
+            return -1;
+        }
+        int n = nums.length;
+        Set<Integer> set = new HashSet<>(n);
+        int i=0;
+        for(;i<n;i++) {
+            set.add(nums[i]);
+        }
+        i=0;
+        while(set.contains(i)) {
+            i++;
+        }
+        return i;
+    }
+
 
     //O(nlogn)
     //堆排序
@@ -100,6 +107,51 @@ public class MySort {
                 break;
             }
         }
+    }
+
+    //快速排序
+    //O(nlogn)
+    private static void quickSort(int[] arr) {
+        String desc = "快速排序";
+        GenerateArrayUtil.printArray(arr,desc,true);
+        if(arr == null || arr.length < 2) {
+            return;
+        }
+        quickSort(arr,0,arr.length-1);
+        GenerateArrayUtil.printArray(arr,desc,false);
+    }
+
+    //递归函数：在arr数组区间[low...high]中进行快速排序
+    //O(nlogn)
+    private static void quickSort(int[] arr,int low,int high) {
+        //结束条件
+        if(low >= high) {
+            return;
+        }
+
+        //返回标的点位置
+        int mid = getMiddle(arr,low,high);
+        quickSort(arr,low,mid);
+        quickSort(arr,mid+1,high);
+    }
+
+    //在arr数组区间[low...high]中找到第一个元素在排序后的位置
+    //O(n)
+    private static int getMiddle(int[] arr,int low,int high) {
+        int pivot = arr[low];
+
+        while(low<high) {
+            while(low<high && arr[high]>=pivot) {
+                high--;
+            }
+            arr[low] = arr[high];
+            while(low<high && arr[low]<=pivot) {
+                low++;
+            }
+            arr[high] = arr[low];
+        }
+        arr[low] = pivot;
+        return low;
     }
 
     //O(nlogn)
